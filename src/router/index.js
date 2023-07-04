@@ -1,12 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
+import kioskMenu from '../components/sellingtype/kioskMenu.vue'
+
 import HomeView from '../views/HomeView.vue'
 import NavBar from '@/components/outline/NavBar.vue'
 
+
 const routes = [
-  {
+   {
     path: '/',
-    name: 'home',
-    component: HomeView
+    name: 'kioskMenu',
+    component: kioskMenu
   },
   {
     path: '/about',

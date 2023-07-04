@@ -3,9 +3,9 @@
     <div class="row">
       <div class="col"></div>
       <div class="col-6">
-        <router-link class="logorouter navbar-brand justify-content-centers" to="/">
-          <img class="logo" src="../../assets/uscreamlogo.png">USCREAM
-        </router-link>
+         <router-link class="logorouter navbar-brand justify-content-centers" to="/">
+                    <img class="logo" src="../../assets/uscreamlogo_FINAL.png" style="height:100%; width:20%;">
+                </router-link>
       </div>
       <div class="col d-flex justify-content-end" style="align-items: center;">
         <!--  <span @click="kakaoLogin" v-if="loginId == null">LOGIN</span> -->
@@ -394,9 +394,8 @@ h3 {
 ul {
   list-style-type: none;
   padding: 0;
+
 }
-
-
 
 a {
   color: black
@@ -438,6 +437,6 @@ a {
 }
 span{
   padding: 0 5px 0 5px
+
 }
 </style>
-  
