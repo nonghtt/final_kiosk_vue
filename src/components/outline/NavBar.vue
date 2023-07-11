@@ -3,21 +3,23 @@
     <div class="row">
       <div class="col"></div>
       <div class="col-6">
-         <router-link class="logorouter navbar-brand justify-content-centers" to="/">
-                    <img class="logo" src="../../assets/uscreamlogo_FINAL.png" style="height:100%; width:20%;">
-                </router-link>
+        <router-link class="logorouter navbar-brand justify-content-centers" to="/">
+          <img class="logo" src="../../assets/uscreamlogo_FINAL.png" style="height:100%; width:20%;">
+        </router-link>
       </div>
       <div class="col d-flex justify-content-end" style="align-items: center;">
         <!--  <span @click="kakaoLogin" v-if="loginId == null">LOGIN</span> -->
-        <span data-bs-toggle="modal" data-bs-target="#loginmodal" v-if="loginId == null">LOGIN</span>
+        <span @click="openModal" id="loginbutton" v-if="loginId == null">LOGIN</span>
         <span @click="kakaologout" v-else>LOGOUT</span>
         <!--  <router-link class="nav-link" to="/join" style="margin-left: 10px; margin-right: 10px;" v-if="loginId ==null">JOIN</router-link> -->
-        <span data-bs-toggle="modal" data-bs-target="#joinmodal" id="joinbtn" v-if="loginId == null">JOIN</span>
-        <span data-bs-toggle="modal" data-bs-target="#myinfomodal" v-if="loginId !=null" @click="getmyinfo">MYINFO</span>
+        <span data-bs-toggle="modal" data-bs-target="#myinfomodal" v-if="loginId != null" @click="getmyinfo">MYINFO</span>
+        <div id="canvas"></div>
       </div>
     </div>
   </div>
-
+  <login-modal v-show="isModalOpen"></login-modal>
+  <br />
+  <kiosk-menu @need-login="clicklogin" />
 
 
 
@@ -95,42 +97,7 @@
   </div>
 
 
-  <!--Login Modal -->
-  <div class="modal fade" id="loginmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">로그인</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <table style="margin: 0px;">
-            <tr>
-              <th>아이디</th>
-              <td><input type="text" v-model="id"></td>
-            </tr>
-            <tr>
-              <th>pwd</th>
-              <td><input type="password" v-model="pwd"></td>
-            </tr>
-            <tr >
-            <td style="position: relative; right: 0px;">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-              <button type="button" class="btn btn-primary" @click="login">로그인</button>
-            </td>
-            </tr>
-          </table>
-        </div>
-        <div class="modal-footer">
-          <a id="custom-login-btn" @click="kakaoLogin()">
-            <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" width="222"
-              alt="카카오 로그인 버튼" />
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
+  
 
   <!--Myinfo Modal -->
   <div class="modal fade modal-lg" id="myinfomodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -144,8 +111,10 @@
         <div class="modal-body">
           <div class="profil_container" style="display: flex; justify-content: center; ">
             <div class="profile_img" style="align-items: center;">
-              <img style="width:150px; height: 200px;align-items: center;" v-bind:src="profileimg" v-if ="profileimg !=null"> 
-              <img style="width:150px; height: 200px;align-items: center;" src="../../assets/defaultimg.jpeg" v-if ="profileimg ==null">
+              <img style="width:150px; height: 200px;align-items: center;" v-bind:src="profileimg"
+                v-if="profileimg != null">
+              <img style="width:150px; height: 200px;align-items: center;" src="../../assets/defaultimg.jpeg"
+                v-if="profileimg == null">
             </div>
             <div class="profile_contents_container">
               <div class="profile_contents" style="display: flex;">
@@ -181,7 +150,7 @@
               </div>
             </div>
           </div>
-          
+
           <div style="margin-top: 20px;display: flex; justify-content: center; border-top: 1px solid gray;">
             <table class="table table-striped">
               <tr style="background-color: rgb(225, 224, 224);">
@@ -194,13 +163,15 @@
               </tr>
               <span v-if="couponlist == null">쿠폰이 없습니다.</span>
               <tr v-else v-for="coupon in couponlist" :key="coupon.couponnum" style="border-bottom: 1px solid #dee2e6">
-                <td class="coupontd" style="width: 220px;">{{ coupon.COUPONNUM }}</td>
+                <td class="coupontd" style="width: 220px;" @click="getcouponinfo(coupon.COUPONNUM)" data-bs-toggle="modal"
+                  data-bs-target="#qrModal">{{ coupon.COUPONNUM }}
+                </td>
                 <td class="coupontd">{{ coupon.STOREID }}</td>
                 <td class="coupontd">{{ coupon.ISSUEDDATE }}</td>
                 <td class="coupontd">{{ coupon.USEDDATE }}</td>
                 <td class="coupontd">{{ coupon.EXPIREDATE }}</td>
-                <td class="coupontd" v-if="coupon.USED ==0">사용가능</td>
-                <td class="coupontd" v-if="coupon.USED ==1">사용완료</td>
+                <td class="coupontd" v-if="coupon.USED == 0">사용가능</td>
+                <td class="coupontd" v-if="coupon.USED == 1">사용완료</td>
               </tr>
             </table>
           </div>
@@ -208,15 +179,47 @@
       </div>
     </div>
   </div>
+
+  <!-- qrmodal -->\
+
+  <div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div ref="qrCodeDiv"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
   
 <script>
+import kioskMenu from '../sellingtype/kioskMenu.vue';
+// import QRCodeVue3 from "qrcode-vue3";
+import QRCode from "qrcode";
+import LoginModal from '@/components/modal/LoginModal.vue'
 
 
 export default {
+  mounted() {
+    this.generateQRCode();
+  },
+  components: { kioskMenu,LoginModal },
   name: 'NavBar',
   data() {
     return {
+      isModalOpen: false,
+      qrCodeComponent: null,
+      myDynamicValue: [],
+      num: 0,
       check: '',
       couponlist: '',
       loginId: sessionStorage.getItem('loginId'),
@@ -224,13 +227,20 @@ export default {
       name: '',
       id: null,
       pwd: '',
+      combinedString: '',
       birthday: '',
       phonenum: '',
       nickname: sessionStorage.getItem("kakao_account_nickname"),
-      profileimg: sessionStorage.getItem("kakao_account_profileimg")
+      profileimg: sessionStorage.getItem("kakao_account_profileimg"),
+      url: require('../../assets/uscreamlogo.png')
     }
   },
   methods: {
+    // clickloginbtn(){
+
+    //   let loginbtn = document.getElementById("loginbtn")
+    //   loginbtn.click()
+    // },
     kakaoLogin() {
 
       window.Kakao.Auth.login({
@@ -271,7 +281,10 @@ export default {
                 console.log(self.email)
                 self.clickButton()
               } else {
-                location.href = "/"
+                if (self.num == 0) {
+                  sessionStorage.setItem("data", self.data)
+                  location.href = "/"
+                }
               }
               /*  router.push({ name: 'MemberJoin', query: { 'email': self.email } }) */
             }
@@ -289,6 +302,7 @@ export default {
         sessionStorage.removeItem("loginId")
         sessionStorage.removeItem("kakao_account_nickname")
         sessionStorage.removeItem("kakao_account_profileimg")
+        localStorage.removeItem("myData")
         location.href = "https://kauth.kakao.com/oauth/logout?client_id=2c924abf030548cc5370e1d25b38bff8&logout_redirect_uri=http://localhost:8081/"
       });
     },
@@ -306,7 +320,9 @@ export default {
         console.log(res.data.dto)
         if (res.data.dto != null && res.data.dto.pwd == self.pwd) {
           sessionStorage.setItem("loginId", res.data.dto.id)
-          location.href = "/"
+          if (self.num == 0) {
+            location.href = "/"
+          }
         } else (
           alert("로그인 실패")
         )
@@ -325,7 +341,7 @@ export default {
       self.$axios.post('http://localhost:8084/members', form).then(function (res) {
         console.log(res.data.member)
         sessionStorage.setItem("loginId", self.id)
-        location.href = "/"
+        self.clicklogin()
       })
     },
     checkid() {
@@ -373,11 +389,58 @@ export default {
         alert("수정이 완료되었습니다.")
         console.log(res.data.member)
       })
+    },
+    clicklogin(data) {
+      this.num = data
+      const btn = document.getElementById("loginbutton")
+      if (btn) {
+        btn.click()
+      }
+    },
+    getcouponinfo(num) {
+      const self = this;
+      self.$axios.get('http://localhost:8084/sellingtype/coupon/' + num).then(function (res) {
+        let templist = res.data.list;
+        console.log(templist);
+        for (let i = 0; i < templist.length; i++) {
+          let productnum = templist[i].productnum;
+          console.log(productnum);
+          self.$axios.get('http://localhost:8085/products/' + productnum).then(function (res1) {
+            self.myDynamicValue.push(res1.data.product.productname);
+            console.log(self.myDynamicValue);
+            if (self.myDynamicValue.length === templist.length) {
+              self.combinedString = self.myDynamicValue.join(', '); // 각 `productname`을 쉼표로 구분하여 문자열로 조합합니다.
+              console.log(self.combinedString);
+              self.generateQRCode()
+            }
+          });
+        }
+      });
+    },
+    generateQRCode() {
+      const qrCodeData = this.combinedString; // QR 코드에 표시할 데이터
+
+      const canvas = document.createElement("canvas");
+      QRCode.toCanvas(canvas, qrCodeData, (error) => {
+        if (error) {
+          console.error("QR Code generation error:", error);
+        } else {
+          this.$refs.qrCodeDiv.appendChild(canvas);
+        }
+      });
+    },
+    openModal() {
+    this.isModalOpen = true;
+  },
+  closeModal() {
+      this.isModalOpen = false;
     }
+
   }
-};
+
+}
 </script>
-<style scoped>
+<style scoped >
 * {
   font-size: 20px;
 }
@@ -432,11 +495,14 @@ a {
   width: 180px;
   height: 50px;
 }
-.coupontd{
+
+.coupontd {
   height: 45px;
 }
-span{
-  padding: 0 5px 0 5px
 
+span {
+  padding: 0 5px 0 5px
 }
+
+
 </style>
