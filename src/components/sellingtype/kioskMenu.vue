@@ -1,13 +1,47 @@
 <template lang="">
   <div>
     <div class="boxcontainer">
-      <div class="leftsidebar">
-        <!-- 장바구니의 공간 실제 장바구니에 들어가는 아이스크림에 대한 div가 생성되는 곳 -->
+      <div class="leftsidebar" :style="{ transform: 'translateY(' + scrollTop + 'px)' }">
+        <div class="upperleftside">
+            <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#carouselExampleInterval" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#carouselExampleInterval" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#carouselExampleInterval" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    <button type="button" data-bs-target="#carouselExampleInterval" data-bs-slide-to="3" aria-label="Slide 4"></button>
+    <button type="button" data-bs-target="#carouselExampleInterval" data-bs-slide-to="4" aria-label="Slide 5"></button>
+  </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active" data-bs-interval="5000">
+      <img src="../../assets/banner1.jpg" class="d-block w-100 banner" alt="..." >
+    </div>
+    <div class="carousel-item" data-bs-interval="5000">
+      <img src="../../assets/banner3.jpg" class="d-block w-100 banner" alt="...">
+    </div>
+    <div class="carousel-item" data-bs-interval="5000">
+      <img src="../../assets/banner4.jpg" class="d-block w-100 banner" alt="...">
+    </div>
+    <div class="carousel-item" data-bs-interval="5000">
+      <img src="../../assets/banner5.png" class="d-block w-100 banner" alt="...">
+    </div>
+    <div class="carousel-item" data-bs-interval="5000">
+      <img src="../../assets/banner6.png" class="d-block w-100 banner" alt="...">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+          </div>
       </div>
 
       <div class="body">
         <div class="ranking">
-          <!-- <div class="upperleftside">좌상단 사이드</div> -->
           <div class="rank" style="color: white; font-weight: bold" v-for="(rank,index) in toplist" :key="index">
             <div class="animate__animated animate__bounce animate__delay-2s animate__faster animate__repeat-2" id="text_rank">
               {{index+1}}위
@@ -17,7 +51,7 @@
 
                 <img
                   :src="rank"
-                  style="height: 200px; width: 200px"
+                  style="height: 150px; width: 150px"
                 />
               </div>
             </div>
@@ -26,33 +60,23 @@
           <!-- <div class="upperrightside">우상단 사이드</div> -->
         </div>
 
-        <!-- <div class="selectbar_size">
-          <select v-model="select_option" @change="choicetype">
-            <option disabled value="" style="text-align: center">
-              --사이즈를 선택해주세요.--
-            </option>
-            <option
-              v-for="(sellprod, index) in sellproduct"
-              :key="sellprod.sellproductnum"
-              :value="index + 1"
-            >
-              {{ sellprod.sellproductname }}
-            </option>
-          </select>
-        </div> -->
 
         <div>
           
 
                   <div class="progress_bar">
-                    <br/>
-                    <div class="progress">
-  <div class="progress-bar bg-danger" role="progressbar" aria-label="Danger example" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-                    진행상태 STEP1 > STEP2 > STEP3 > STEP4 가즈아
-                  
-                    <div class="progress-bar bg-danger" role="progressbar" aria-label="Danger example" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
 
+                    <div class="wrapper">
+    <div class="arrow-steps clearfix">
+      <div v-for="(step, index) in steps" :key="index" :class="{ 'step': true, 'current': index === currentIndex, 'done': index < currentIndex }">
+        <span>{{ step }}</span>
+      </div>
+    </div>
+    <div class="nav clearfix">
+      <button class="prev" @click="previousStep" v-show="none" id="prevbtn">Previous</button>
+      <button class="next pull-right" @click="nextStep" v-show="none" id="nextbtn">Next</button>
+    </div>
+  </div>
                   </div>
 
 
@@ -80,15 +104,15 @@
               class="grid_item_branch"
                 v-show="progress == 1"
                 v-for="store in storelist"
-                :key="store.storeid"
-              >
+                :key="store.storeid" >
                 <button
                   type="button"
                   class="grid_item_branchtext"
                   @click="selectstore(store)"
                 >
-                  {{ store.storename }}
+                  {{store.storename}}
                 </button>
+                
               </div>
             </div>
           </div>
@@ -121,7 +145,7 @@
                 v-for="(sellprod, index) in sellproduct"
                 @click="choicetype(index + 1)"
                 :key="sellprod.sellproductnum"
-                :value="index + 1"
+                :value="index + 1"  
               >
                 {{ sellprod.sellproductname }}
               </div>
@@ -178,8 +202,7 @@
                   data-bs-target="#flush-collapseTwo"
                   aria-expanded="false"
                   aria-controls="flush-collapseTwo"
-                  @click="changeprogress(2)"
-                >
+                  @click="changeprogress(2)" disabled>
                   Step 2. 사이즈 선택
                 </button>
               </h2>
@@ -194,6 +217,7 @@
             </div>
             <div class="accordion-item">
               <h2 class="accordion-header" id="flush-headingThree">
+                
                 <button
                   id="accordion3"
                   class="accordion-button collapsed"
@@ -202,8 +226,7 @@
                   data-bs-target="#flush-collapseThree"
                   aria-expanded="false"
                   aria-controls="flush-collapseThree"
-                  @click="changeprogress(3)"
-                >
+                  @click="changeprogress(3)" disabled>
                   Step 3. 맛 선택{{ counter }} / {{ select_option }}
                 </button>
               </h2>
@@ -214,26 +237,32 @@
                 data-bs-parent="#accordionFlushExample"
               >
                 <div class="accordion-body" id="accordion-body3">
-                  <div class="container_basket">
-                    <div
-                      v-for="index in selectproductimg"
-                      :key="index"
-                      class="selected_basket"
-                      @click="changeprogress(4)"
-                    >
+                  <div class="container_basket" style="margin:0px">
                     
-                      <img
-                        :src="index"
-                        alt="../../assets/btn_cancle.PNG"
-                        style="width: 100px; height: 100px"
+                    <div
+                      v-for="(img,index) in selectproductimg"
+                      :key="index"
+                    >
+                     <img
+                      :src="img"
+                     style="width: 130px; height: 130px"
                       />
-                      <div class="btn_cancle_parent"><button class="btn_cancle_child"><img src=""/>X</button></div>
+                      <span v-if="img !='/img/tempimg.127a5633.png'" style="position: absolute; right:48px ;padding:6px 0 0 0" @click="selectcancle(index)"><i class="fa-solid fa-xmark fa-lg"></i></span>
+                    <div style="display:flex ;margin-left:22px" v-if="img !='/img/tempimg.127a5633.png'">
+                      <button class="button" id="downbtn" @click="downcnt(index)">-</button>
+
+                      <div style="width:50px; height:20px">{{amount[index]}}</div>
+                    <button class="button" @click="upcnt(index)">+</button>
+                  </div>
                     </div>
+                    
                   </div>
                 </div>
+                
               </div>
+              
               <div class="accordion-item">
-                <h2 class="accordion-header" id="flush-headingFour">
+              <h2 class="accordion-header" id="flush-headingFour">
                   <button
                     id="accordion4"
                     class="accordion-button collapsed"
@@ -241,8 +270,7 @@
                     data-bs-toggle="collapse"
                     data-bs-target="#flush-collapseFour"
                     aria-expanded="false"
-                    aria-controls="flush-collapseFour"
-                  >
+                    aria-controls="flush-collapseFour" disabled >
                     Step 4. 결제
                   </button>
                 </h2>
@@ -255,6 +283,7 @@
                   <div class="accordion-body">
                     <button
                       type="button"
+                      id="order"
                       class="btn btn-primary"
                       data-bs-toggle="modal"
                       data-bs-target="#staticBackdrop"
@@ -300,11 +329,15 @@
           지점명 : {{ storename }}<br />
           선택한 사이즈 : {{ size }}<br />
           선택한 맛의 종류 :
-          <div v-for="selproduct in selectproduct" :key="selproduct.productnum">
-            {{ selproduct.productname }}<br />
-
-            <!-- {{selproduct.cost}}<br/> --><!-- 이거슨 원가(한통당 가격)이기때문에 지워야함{{price}} -->
+          <div class="ordercontainer">
+            <div v-for="(selproduct, index) in selectproduct" :key="selproduct.productnum">
+              <img style="width:100px; height:100px" :src="selectproductimg[index]">
+                 <div>
+                   {{ selproduct.productname }}
+                  </div>
+            </div>
           </div>
+
 
           <!-- <div v-for="selprice in sellproduct" :key="selprice.sellproductnum"> -->
           <!-- 가격 : {{selprice.sellproductprice}}원  -->
@@ -319,7 +352,7 @@
           >
             취소
           </button>
-          <button type="button" class="btn btn-primary" @click="payment_final">
+          <button type="button" class="btn btn-primary" @click="requestPay">
             쿠폰발급
           </button>
         </div>
@@ -328,41 +361,94 @@
   </div>
 </template>
 <script>
+
+
+
+
 export default {
+  
   name: "kioskMenu",
   data() {
     return {
+      none: false,
+      steps: ['Step 1', 'Step 2', 'Step 3', 'Step 4'],
+      currentIndex: 0,
+      amount: [],
+      num: 2,
       progress: 1,
       storeid: "",
-      storename: "",
+      storename: null,
       storelist: [],
       productnum: "",
       productname: "",
       productimg: "",
       productinfo: "",
-      size: "",
+      size: null,
       cost: "",
       scrollTop: 0,
       list: [],
       index: 0,
       select_option: 0,
       counter: 0,
+      tempselectproduct: [],
       selectproduct: [],
       selectproductimg: [],
       url: "http://localhost:8085/products/img/",
-      cancleurl: "../assets/btn_cancle.PNG",
+      tempimg: require("../../assets/tempimg.png"),
       payment_window: false,
       openModal: false,
       sellproduct: [],
       price: "",
-      selprice: "",
+      sellprice: 0,
       userid: sessionStorage.getItem("loginId"),
       couponnum: "",
       sellproductnum: "",
-      toplist:[]
+      toplist: [],
+      tempnum: 0,
+
     };
   },
   created: function () {
+    const storedData = localStorage.getItem('myData');
+    if (storedData !=null && sessionStorage.getItem("loginId") != null) {
+      const parsedData = JSON.parse(storedData);
+      this.none = parsedData.none;
+      this.currentIndex = parsedData.currentIndex;
+      this.amount = parsedData.amount;
+      this.num = parsedData.num;
+      this.progress = parsedData.progress;
+      this.storeid = parsedData.storeid;
+      this.storename = parsedData.storename;
+      this.storelist = parsedData.storelist;
+      this.productnum = parsedData.productnum;
+      this.productname = parsedData.productname;
+      this.productimg = parsedData.productimg;
+      this.productinfo = parsedData.productinfo;
+      this.size = parsedData.size;
+      this.cost = parsedData.cost;
+      this.scrollTop = parsedData.scrollTop;
+      this.list = parsedData.list;
+      this.index = parsedData.index;
+      this.select_option = parsedData.select_option;
+      this.counter = parsedData.counter;
+      this.tempselectproduct = parsedData.tempselectproduct;
+      this.selectproduct = parsedData.selectproduct;
+      this.selectproductimg = parsedData.selectproductimg;
+      this.url = parsedData.url;
+      this.tempimg = parsedData.tempimg;
+      this.payment_window = parsedData.payment_window;
+      this.openModal = parsedData.openModal;
+      this.sellproduct = parsedData.sellproduct;
+      this.price = parsedData.price;
+      this.sellprice = parsedData.sellprice;
+      this.userid = sessionStorage.getItem("loginId")
+      this.couponnum = parsedData.couponnum;
+      this.sellproductnum = parsedData.sellproductnum;
+      this.tempnum = parsedData.tempnum;
+      
+    }
+
+
     const self = this;
     let cat = "icecream";
     self.$axios
@@ -379,15 +465,16 @@ export default {
       self.sellproduct = res2.data.selllist;
     });
 
-    self.$axios.get("http://localhost:8085/store").then(function (res3) {
+    self.$axios.get("http://localhost:8085/store/accounttype/2").then(function (res3) {
       self.storelist = res3.data.storelist;
+      console.log(self.storelist)
     });
 
-    self.$axios.get("http://localhost:8084/sellingtype/topsales").then(function(res4){
+    self.$axios.get("http://localhost:8084/sellingtype/topsales").then(function (res4) {
       let arr = res4.data.toplist;
       console.log(arr)
-      for(let i = 0 ;i < arr.length ; i++){
-        self.toplist.push("http://localhost:8085/products/img/"+arr[i].PRODUCTNUM)
+      for (let i = 0; i < arr.length; i++) {
+        self.toplist.push("http://localhost:8085/products/img/" + arr[i].PRODUCTNUM)
         console.log(self.toplist)
       }
 
@@ -395,6 +482,15 @@ export default {
   },
   mounted() {
     window.addEventListener("scroll", this.handleScroll);
+    const storedData = localStorage.getItem('myData');  
+    if(storedData != null){
+      let accordion2 = document.getElementById("accordion2");
+      accordion2.disabled = false;
+      let accordion3 = document.getElementById("accordion3");
+      accordion3.disabled = false;
+      let accordion4 = document.getElementById("accordion4");
+      accordion4.disabled = false;
+    }
   },
   beforeUnmounted() {
     window.removeEventListener("scroll", this.handleScroll);
@@ -408,61 +504,75 @@ export default {
       alert(this.select_option);
     },
     changeprogress(num) {
-      this.progress = num;
-    },
-    changeprogressstep3(){
-     const self = this;
-      if(self.counter === self.select_option){
-        alert(self.counter)
-        alert(self.select_option)  
-        let accordian4 = document.getElementById('accordian4');
-          
-            accordian4.click();
-            
+      console.log("changeprogress " + num)
+      switch (num) {
+        case 1:
+          this.progress = num;
+          this.goToStep(num - 1)
+          break;
+        case 2:
+          if (this.storename != null) {
+            let btn = document.getElementById("accordion2")
+            btn.disabled = false
+            this.progress = num;
+            this.goToStep(num - 1)
+
+
+          }
+          break;
+
+        case 3:
+          if (this.size != null) {
+            let btn = document.getElementById("accordion3")
+            btn.disabled = false
+            this.progress = num;
+            this.goToStep(num - 1)
+            if (this.select_option == this.counter)
+              this.goToStep(num)
+          }
+          break;
+
+
       }
     },
 
     // 메뉴를 누르면 select_option의 value가 하나씩 올라가는 곳
     incrementCounter(num) {
-      alert(1)
-      console.log(num);
-      this.counter += 1;
-      this.selectproductimg.reverse();
-      this.selectproductimg.splice(0, 1);
-      const self = this;
-      self.$axios.get("http://localhost:8085/products/" + num).then(function (res) {
-        alert(5)
-        let product = res.data.product;
-          console.log(product);
-          self.selectproduct.push(product);
-          console.log(self.selectproduct);
+      if (this.counter != this.select_option) {
+        console.log(num);
+        const self = this;
+        self.$axios.get("http://localhost:8085/products/" + num).then(function (res) {
+          let product = res.data.product;
+          const checkorder = confirm(product.productname + " 을(를) 선택하시겠습니까?");
+          if (checkorder) {
 
-          confirm(product.productname + " 을(를) 선택하시겠습니까?");
-        });
-      // // 고객입장에서 결제할 금액을 불러오기위한 코드를 짜던중에 ......길을 잃었다.
-      // self.$axios.get("http://localhost:8085/sellproduct/"+num).then(function(res2){
-      //  let sellproduct = res2.data.sellproduct
-      //  console.log(sellproduct)
-      // })
-      alert(2)
-      self.url = self.url + num;
-      self.selectproductimg.push(self.url);
-      console.log(self.selectproductimg);
-      alert(3)
-      this.selectproductimg.reverse();
-      console.log(this.selectproductimg);
-      // alert(this.selectproductimg)
-      this.url = "http://localhost:8085/products/img/";
+            self.url = self.url + num;
+            self.amount[self.tempnum] = 1
+            self.selectproductimg[self.tempnum] = self.url
+            self.url = "http://localhost:8085/products/img/";
+            console.log(product);
+            self.tempselectproduct[self.tempnum] = product;
+            console.log(self.tempselectproduct);
+            self.counter += 1;
+            self.tempnum += 1;
+            if (self.counter == self.select_option) {
+              alert("상품을 모두 선택하였습니다.")
+              let accordion4 = document.getElementById("accordion4");
+              accordion4.disabled = false
+              accordion4.click();
+              self.nextStep()
+            }
 
-      // if(this.counter === this.select_option){
-      //   let accordian4 = document.getElementById('accordian2');
-      //   accordian4.click();
-      // }else
-      alert(4)
-      if (this.counter > this.select_option) {
-        this.counter = this.select_option;
-        alert("선택가능한 종류를 초과하였습니다.");
+          }
+
+          let accordion3 = document.getElementById("accordion3");
+          accordion3.click();
+
+        })
+      } else {
+        alert("상품을 모두 선택하였습니다.")
       }
+
     },
     selectfirsttype() {
       if (this.counter == 0) {
@@ -471,11 +581,24 @@ export default {
       }
     },
     choicetype(num) {
+      console.log(this.tempselectproduct)
+      this.tempselectproduct.length = 0
+      this.tempnum = 0
+      console.log(this.tempselectproduct)
       this.counter = 0;
       this.select_option = num;
 
+
       //배열의 길이를 (사이즈에 따른 길이를 강제로) 지정해주는 것
       this.selectproductimg.length = this.select_option;
+
+      for (let i = 0; i < this.select_option; i++) {
+
+        this.selectproductimg.splice(0, 1)
+        this.selectproductimg.push(this.tempimg)
+      }
+
+
 
       console.log(this.selectproductimg.length);
       console.log(this.select_option);
@@ -493,49 +616,98 @@ export default {
       } else if (this.select_option == 6) {
         this.size = "하프캘런(HALF_GALLON,6)";
       }
-
+      this.sellprice = this.size.sellproductprice
       const self = this;
+      let accordion2 = document.getElementById("accordion2");
+      accordion2.disabled = false
+      // let accordion3 = document.getElementById("accordion3");
+      accordion2.click();
       self.progress = 3;
+      console.log(self.num)
+      this.nextStep()
       let accordion3 = document.getElementById("accordion3");
-      accordion3.click();
+      accordion3.disabled = false
       // accordion3.changeprogressstep3();
-      
+
 
     },
     selectstore(store) {
       this.storename = store.storename;
       this.storeid = store.storeid;
       let accordion1 = document.getElementById("accordion1");
-      let accordion2 = document.getElementById("accordion2");
+
       accordion1.click();
       this.progress = 2;
-      accordion2.click();
+      this.nextStep()
     },
 
     // 결제하기(장바구니) 버튼 누르면 모달창 띄워지는 메서드 실현구간
     orderconfirm() {
-      const self = this;
-      // select_option이 선택된 가짓수, (컵)사이즈이기 때문에 해당된 data를 가져와서 사용하자.
-      let favor = this.select_option;
+      console.log(this.userid)
+      if (sessionStorage.getItem("loginId") == null) {
+        alert("로그인을 먼저해주세요.")
+        this.$emit('need-login', 1);
+        const savedata = {
+          currentIndex: this.currentIndex,
+          amount: this.amount,
+          num: this.num,
+          progress: this.progress,
+          storeid: this.storeid,
+          storename: this.storename,
+          storelist: this.storelist,
+          productnum: this.productnum,
+          productname: this.productname,
+          productimg: this.productimg,
+          productinfo: this.productinfo,
+          size: this.size,
+          cost: this.cost,
+          scrollTop: this.scrollTop,
+          list: this.list,
+          index: this.index,
+          select_option: this.select_option,
+          counter: this.counter,
+          tempselectproduct: this.tempselectproduct,
+          selectproduct: this.selectproduct,
+          selectproductimg: this.selectproductimg,
+          url: this.url,
+          tempimg: this.tempimg,
+          payment_window: this.payment_window,
+          openModal: this.openModal,
+          sellproduct: this.sellproduct,
+          price: this.price,
+          sellprice: this.sellprice,
+          sellproductnum: this.sellproductnum,
+          tempnum: this.tempnum
+        }
 
-      // axios를 사용하고 싶다
-      self.$axios
-        .get("http://localhost:8085/sellproducts/" + favor)
-        .then(function (res) {
-          // alert(response.data.sellproduct.sellproductprice)  .확인완료
+        localStorage.setItem('myData', JSON.stringify(savedata));
+        // let orderbtn = document.getElementById("order");
+        // orderbtn.click();
+      } else {
+        this.selectproduct = this.tempselectproduct
+        const self = this;
+        // select_option이 선택된 가짓수, (컵)사이즈이기 때문에 해당된 data를 가져와서 사용하자.
+        let favor = this.select_option;
 
-          //1. 배열로 뽑아와서 for문으로 받는 방법?
-          // let sp = res.data.sellproduct
+        // axios를 사용하고 싶다
+        self.$axios
+          .get("http://localhost:8085/sellproducts/" + favor)
+          .then(function (res) {
+            // alert(response.data.sellproduct.sellproductprice)  .확인완료
 
-          // 2. 가격만 뽑아서 위에서 보여주는 방법
-          self.sellproductnum = res.data.sellproduct.sellproductnum;
-          self.selprice = res.data.sellproduct.sellproductprice;
-          // let selprice1 = res.data.sellproduct.sellproductprice
-          //사이즈에 대한 가격이 찍혀있어야 함.(3400, 4700, 8400)
-          // alert(selprice1)
-          // alert(selprice)
-        });
-      // sellproduct에 가서 결제창에서 선택된 value값을 pk로 해당된 배열을 검색하고 그값을 가져오는 오기.(value에 따른 가격을 찾기위함.)
+            //1. 배열로 뽑아와서 for문으로 받는 방법?
+            // let sp = res.data.sellproduct
+
+            // 2. 가격만 뽑아서 위에서 보여주는 방법
+            self.sellproductnum = res.data.sellproduct.sellproductnum;
+            self.sellprice = res.data.sellproduct.sellproductprice;
+            // let selprice1 = res.data.sellproduct.sellproductprice
+            //사이즈에 대한 가격이 찍혀있어야 함.(3400, 4700, 8400)
+            // alert(selprice1)
+            // alert(selprice)
+          });
+        // sellproduct에 가서 결제창에서 선택된 value값을 pk로 해당된 배열을 검색하고 그값을 가져오는 오기.(value에 따른 가격을 찾기위함.)
+      }
     },
     payment_final() {
       //1.selling 에 데이터(판매내역, 사이즈에 대한 정보)보내기
@@ -556,8 +728,8 @@ export default {
       form.append("userid", self.userid);
       form.append("storeid", self.storeid);
       console.log(self.storeid);
-      console.log(form);
       console.log(self.userid);
+      console.log(form);
 
       self.$axios
         .post("http://localhost:8084/coupons", form)
@@ -566,7 +738,7 @@ export default {
           self.couponnum = res1.data.dto.couponnum
           console.log(self.couponnum);
 
-          
+
           for (let i = 0; i < self.selectproduct.length; i++) {
             let sellingtypeform = new FormData();
             sellingtypeform.append("productnum", self.selectproduct[i].productnum);
@@ -577,14 +749,15 @@ export default {
             sellingtypeform.append("id", self.userid);
             console.log(self.userid);
             sellingtypeform.append("couponnum", self.couponnum);
+            sellingtypeform.append("amount", self.amount[i]);
             console.log(self.couponnum);
             console.log(sellingtypeform);
-            
+
             self.$axios
-            .post("http://localhost:8084/sellingtype", sellingtypeform)
-            .then(function (res3) { 
-              console.log("res3 :"  + res3.data + i);
-              console.log(sellingtypeform);
+              .post("http://localhost:8084/sellingtype", sellingtypeform)
+              .then(function (res3) {
+                console.log("res3 :" + res3.data + i);
+                console.log(sellingtypeform);
               });
           }
         });
@@ -595,7 +768,8 @@ export default {
       sellingform.append("storeid", self.storeid);
       console.log(self.storeid);
       sellingform.append("sellingcnt", 1);
-      sellingform.append("sellprice", self.selprice);
+      sellingform.append("sellingprice", self.sellprice);
+      console.log(self.sellprice)
       self.$axios
         .post("http://localhost:8085/selling/add", sellingform)
         .then(function (res2) {
@@ -603,11 +777,95 @@ export default {
         });
 
 
-        alert("쿠폰발급이 완료되었습니다.")
-   
+      alert("쿠폰발급이 완료되었습니다.")
+      localStorage.removeItem("myData")
+
     },
+    selectcancle(index) {
+      this.counter -= this.amount[index]
+      this.selectproductimg.splice(index, 1)
+      this.tempselectproduct.splice(index, 1)
+      for (let i = 0; i < this.amount[index]; i++) {
+        this.selectproductimg.push(this.tempimg)
+      }
+      this.tempnum -= 1
+      console.log(this.tempselectproduct)
+
+    },
+    upcnt(index) {
+
+      this.amount[index] += 1
+      this.counter += 1
+      console.log(this.selectproductimg.length - 1)
+      this.selectproductimg.splice(this.selectproductimg.length - 1, 1)
+      let btn = document.getElementById("downbtn")
+      btn.disabled = false
+      if (this.counter == this.select_option) {
+        alert("상품을 모두 선택하였습니다.")
+        let accordion4 = document.getElementById("accordion4");
+        accordion4.disabled = false
+        accordion4.click();
+        this.nextStep()
+
+      }
+
+    },
+    downcnt(index) {
+      if (this.amount[index] > 1) {
+        this.amount[index] -= 1
+        this.counter -= 1
+        this.selectproductimg.push(this.tempimg)
+      } else {
+        let btn = document.getElementById("downbtn")
+        btn.disabled = true
+      }
+    },
+    nextStep() {
+      if (this.currentIndex < this.steps.length - 1) {
+        this.currentIndex++;
+      }
+    },
+    previousStep() {
+      if (this.currentIndex > 0) {
+        this.currentIndex--;
+      }
+    },
+    goToStep(num) {
+      this.currentIndex = num;
+    },
+    requestPay: function () {
+        const { IMP } = window;
+      IMP.init('imp44428270');
+
+      /* 2. 결제 데이터 정의하기 */
+      const data = {
+        pg: 'kcp',                           // PG사
+        pay_method: 'card',                           // 결제수단
+        merchant_uid: `mid_${new Date().getTime()}`,   // 주문번호
+        amount: this.sellprice,                                 // 결제금액
+        name: this.size,                  // 주문명
+        buyer_email: 'example@example',               // 구매자 이메일
+      }
+
+      /* 4. 결제 창 호출하기 */
+      IMP.request_pay(data, this.callback);
+    },
+    callback(response) {
+      /* 3. 콜백 함수 정의하기 */
+      const {
+        success,
+        error_msg,
+      } = response;
+
+      if (success) {
+        this.payment_final()
+      } else {
+        alert(`결제 실패: ${error_msg}`);
+      }
+    
+      }
+
   },
-  components: {},
 };
 </script>
 
@@ -615,10 +873,12 @@ export default {
 * {
   margin: 0;
   padding: 0;
+  scroll-behavior: smooth;
 }
 
 /* 추천메뉴(?) 보여주는 컨테이너 */
 .ranking {
+  -webkit-font-smoothing: antialiased;
   display: flex;
   height: 100%;
   background-color: white;
@@ -632,7 +892,7 @@ export default {
 #text_rank {
   color: #f5d742;
   vertical-align: middle;
-  padding-top:15px;
+  padding-top: 15px;
   font-size: 20px;
 }
 
@@ -643,15 +903,18 @@ export default {
 
 
   display: grid;
-  grid-template-columns: repeat(6, 1fr); /* 4열 그리드 */
-  grid-gap: 5px; /* 그리드 간격 설정 */
-  border:solid;
-  border-color:#265cac;
+  grid-template-columns: repeat(6, 1fr);
+  /* 4열 그리드 */
+  grid-gap: 5px;
+  /* 그리드 간격 설정 */
+  border: solid;
+  border-color: #265cac;
 }
 
 .boxcontainer {
   display: flex;
 }
+
 .leftsidebar {
   background-color: white;
   width: 15%;
@@ -664,6 +927,7 @@ export default {
 
   padding-top: 10px;
 }
+
 /* 리스트 내 각각의 상품. for문으로 작성된 상품 */
 .productsite {
   width: 20%;
@@ -694,11 +958,12 @@ export default {
   transition: transform 0.3s ease;
 }
 
-.row{
-border: solid;
-border-color:#265cac;
-margin:10px 10px 10px 10px;
+.row {
+  border: solid;
+  border-color: #265cac;
+  margin: 10px 10px 10px 10px;
 }
+
 .body {
   /* background-color:#42b3f5; */
   width: 70%;
@@ -709,6 +974,7 @@ margin:10px 10px 10px 10px;
   width: 15%;
   height: 100%;
 }
+
 .shoppingbasket {
   border: 5px solid;
   border-color: aquamarine;
@@ -717,9 +983,9 @@ margin:10px 10px 10px 10px;
   background-color: white;
   position: relative;
   height: 500px;
-  transition: transform 0.3s ease;
-  overflow:auto;
+  overflow: auto;
 }
+
 .selected_basket {
   border: 5px solid;
   border-color: #265cac;
@@ -735,18 +1001,21 @@ margin:10px 10px 10px 10px;
   align-content: space-between;
 
 }
-.col-3{
+
+.col-3 {
   /* border:none; */
-  padding: 15px 15px 15px 15px; 
-  background-color:white;
+  padding: 15px 15px 15px 15px;
+  background-color: white;
 }
+
 .container_basket {
   /* border: 5px solid; */
   /* border-color: #265cac; */
   background-color: white;
-  padding: 10px 10px 10px 10px;
-  
+  width: 153.8px;
+
 }
+
 .shopping_basket_footer {
   position: fixed;
   bottom: 0;
@@ -754,6 +1023,7 @@ margin:10px 10px 10px 10px;
   left: 25%;
 
 }
+
 .payment_window {
   background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
@@ -764,6 +1034,7 @@ margin:10px 10px 10px 10px;
   height: 500px;
   border-radius: 30px;
 }
+
 .payment_modal {
   background-color: white;
 }
@@ -774,53 +1045,202 @@ margin:10px 10px 10px 10px;
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-decoration-color: gray;
-  color:gray;
+  color: gray;
 }
+
 /* 사이즈 선택시 리스트 뿌려주는 컨테이너 */
 .grid_container_size {
-border:none;
+  border: none;
 }
 
 
 /* 그리드 컨테이너 사이즈의 자식 */
 
-.grid_item_size{
+.grid_item_size {
   border: solid 1px;
   text-align: center;
-  border:none;
-  font-size:30px;
+  border: none;
+  font-size: 30px;
 }
+
 .grid_item_size:hover {
   background-color: white;
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-decoration-color: gray;
-  color:gray;
+  color: gray;
 }
-.btn_cancle_child{
-  position:relative
+
+.btn_cancle_child {
+  position: relative
 }
-.grid_container_branch{
+
+.grid_container_branch {
   display: grid;
-  grid-template-columns: repeat(5, 1fr); /* 4열 그리드 */
-  grid-gap: 5px; /* 그리드 간격 설정 */
-  border:solid;
-  border-color:#265cac;
+  grid-template-columns: repeat(5, 1fr);
+  /* 4열 그리드 */
+  grid-gap: 5px;
+  /* 그리드 간격 설정 */
+  border: solid;
+  border-color: #265cac;
 }
-.grid_item_branch{
-  margin:20px 10px 10px 10px;
+
+.grid_item_branch {
+  margin: 20px 10px 10px 10px;
 }
+
 .grid_item_branchtext {
   width: 100px;
   height: 60px;
   background-color: white;
-  border:none;
+  border: none;
   text-align: space-between;
   display: inline-block;
-  font-size:25px;
+  font-size: 25px;
 }
-.progress_bar{
-  font-size:50px;
+
+.progress_bar {
+  font-family: 'Lato', sans-serif;
+  width: 130vh;
+  margin: 0 auto;
+  font-size: 50px;
+}
+
+.ordercontainer {
+  display: flex;
+  justify-content: center;
+}
+
+.banner {
+  height: 500px;
+}
+
+.button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid green;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.clearfix:after {
+  clear: both;
+  content: "";
+  display: block;
+  height: 0;
+}
+
+.wrapper {
+  display: table-cell;
+  height: 95px;
+  vertical-align: middle;
+  padding-top: 46px;
+}
+
+.nav {
+  margin-top: 40px;
+}
+
+.pull-right {
+  float: right;
+}
+
+a,
+a:active {
+  color: #212121;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #999;
+}
+
+.arrow-steps .step {
+  font-size: 14px;
+  text-align: center;
+  color: #666;
+  cursor: default;
+  margin: 0 3px;
+  padding: 10px 10px 10px 30px;
+  min-width: 227px;
+  float: left;
+  position: relative;
+  background-color: #b4e7ff;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.arrow-steps .step:after,
+.arrow-steps .step:before {
+  content: " ";
+  position: absolute;
+  top: 0;
+  right: -17px;
+  width: 0;
+  height: 0;
+  border-top: 19px solid transparent;
+  border-bottom: 17px solid transparent;
+  border-left: 17px solid #b4e7ff;
+  z-index: 2;
+  transition: border-color 0.2s ease;
+}
+
+.arrow-steps .step:before {
+  right: auto;
+  left: 0;
+  border-left: 17px solid #fff;
+  z-index: 0;
+}
+
+.arrow-steps .step:first-child:before {
+  border: none;
+}
+
+.arrow-steps .step:first-child {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.arrow-steps .step span {
+  position: relative;
+}
+
+.arrow-steps .step span:before {
+  opacity: 0;
+  content: "✔";
+  position: absolute;
+  top: -2px;
+  left: -20px;
+  color: #06ac77;
+}
+
+.arrow-steps .step.done span:before {
+  opacity: 1;
+  -webkit-transition: opacity 0.3s ease 0.5s;
+  -moz-transition: opacity 0.3s ease 0.5s;
+  -ms-transition: opacity 0.3s ease 0.5s;
+  transition: opacity 0.3s ease 0.5s;
+}
+
+.arrow-steps .step.current {
+  color: #fff;
+  background-color: #ff5050;
+}
+
+.arrow-steps .step.current:after {
+  border-left: 17px solid #ff5050;
+}
+
+@media (max-width: 765px) {
+  .arrow-steps .step {
+    min-width: 35px;
+  }
 }
 
 </style>
