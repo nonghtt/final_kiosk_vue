@@ -348,6 +348,7 @@
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="staticBackdropLabel">주문 확인</h1>
           <button
+          id="closebtn"
             type="button"
             class="btn-close"
             data-bs-dismiss="modal"
@@ -414,7 +415,7 @@
 <script>
 
 export default {
-  
+
   name: "kioskMenu",
   data() {
     return {
@@ -458,7 +459,7 @@ export default {
   },
   created: function () {
     const storedData = localStorage.getItem('myData');
-    if (storedData !=null && sessionStorage.getItem("loginId") != null) {
+    if (storedData != null && sessionStorage.getItem("loginId") != null) {
       const parsedData = JSON.parse(storedData);
       this.none = parsedData.none;
       this.currentIndex = parsedData.currentIndex;
@@ -493,7 +494,7 @@ export default {
       this.couponnum = parsedData.couponnum;
       this.sellproductnum = parsedData.sellproductnum;
       this.tempnum = parsedData.tempnum;
-      
+
     }
 
 
@@ -530,8 +531,8 @@ export default {
   },
   mounted() {
     window.addEventListener("scroll", this.handleScroll);
-    const storedData = localStorage.getItem('myData');  
-    if(storedData != null){
+    const storedData = localStorage.getItem('myData');
+    if (storedData != null) {
       let accordion2 = document.getElementById("accordion2");
       accordion2.disabled = false;
       let accordion3 = document.getElementById("accordion3");
@@ -690,70 +691,31 @@ export default {
     // 결제하기(장바구니) 버튼 누르면 모달창 띄워지는 메서드 실현구간
     orderconfirm() {
       console.log(this.userid)
-      if (sessionStorage.getItem("loginId") == null) {
-        alert("로그인을 먼저해주세요.")
-        this.$emit('need-login', 1);
-        const savedata = {
-          currentIndex: this.currentIndex,
-          amount: this.amount,
-          num: this.num,
-          progress: this.progress,
-          storeid: this.storeid,
-          storename: this.storename,
-          storelist: this.storelist,
-          productnum: this.productnum,
-          productname: this.productname,
-          productimg: this.productimg,
-          productinfo: this.productinfo,
-          size: this.size,
-          cost: this.cost,
-          scrollTop: this.scrollTop,
-          list: this.list,
-          index: this.index,
-          select_option: this.select_option,
-          counter: this.counter,
-          tempselectproduct: this.tempselectproduct,
-          selectproduct: this.selectproduct,
-          selectproductimg: this.selectproductimg,
-          url: this.url,
-          tempimg: this.tempimg,
-          payment_window: this.payment_window,
-          openModal: this.openModal,
-          sellproduct: this.sellproduct,
-          price: this.price,
-          sellprice: this.sellprice,
-          sellproductnum: this.sellproductnum,
-          tempnum: this.tempnum
-        }
 
-        localStorage.setItem('myData', JSON.stringify(savedata));
-        // let orderbtn = document.getElementById("order");
-        // orderbtn.click();
-      } else {
-        this.selectproduct = this.tempselectproduct
-        const self = this;
-        // select_option이 선택된 가짓수, (컵)사이즈이기 때문에 해당된 data를 가져와서 사용하자.
-        let favor = this.select_option;
+      this.selectproduct = this.tempselectproduct
+      const self = this;
+      // select_option이 선택된 가짓수, (컵)사이즈이기 때문에 해당된 data를 가져와서 사용하자.
+      let favor = this.select_option;
 
-        // axios를 사용하고 싶다
-        self.$axios
-          .get("http://localhost:8085/sellproducts/" + favor)
-          .then(function (res) {
-            // alert(response.data.sellproduct.sellproductprice)  .확인완료
+      // axios를 사용하고 싶다
+      self.$axios
+        .get("http://localhost:8085/sellproducts/" + favor)
+        .then(function (res) {
+          // alert(response.data.sellproduct.sellproductprice)  .확인완료
 
-            //1. 배열로 뽑아와서 for문으로 받는 방법?
-            // let sp = res.data.sellproduct
+          //1. 배열로 뽑아와서 for문으로 받는 방법?
+          // let sp = res.data.sellproduct
 
-            // 2. 가격만 뽑아서 위에서 보여주는 방법
-            self.sellproductnum = res.data.sellproduct.sellproductnum;
-            self.sellprice = res.data.sellproduct.sellproductprice;
-            // let selprice1 = res.data.sellproduct.sellproductprice
-            //사이즈에 대한 가격이 찍혀있어야 함.(3400, 4700, 8400)
-            // alert(selprice1)
-            // alert(selprice)
-          });
-        // sellproduct에 가서 결제창에서 선택된 value값을 pk로 해당된 배열을 검색하고 그값을 가져오는 오기.(value에 따른 가격을 찾기위함.)
-      }
+          // 2. 가격만 뽑아서 위에서 보여주는 방법
+          self.sellproductnum = res.data.sellproduct.sellproductnum;
+          self.sellprice = res.data.sellproduct.sellproductprice;
+          // let selprice1 = res.data.sellproduct.sellproductprice
+          //사이즈에 대한 가격이 찍혀있어야 함.(3400, 4700, 8400)
+          // alert(selprice1)
+          // alert(selprice)
+        });
+      // sellproduct에 가서 결제창에서 선택된 value값을 pk로 해당된 배열을 검색하고 그값을 가져오는 오기.(value에 따른 가격을 찾기위함.)
+
     },
     payment_final() {
       //1.selling 에 데이터(판매내역, 사이즈에 대한 정보)보내기
@@ -880,21 +842,65 @@ export default {
       this.currentIndex = num;
     },
     requestPay: function () {
+      if (sessionStorage.getItem("loginId") == null) {
+        alert("로그인을 먼저해주세요.")
+        this.$emit('need-login', 1);
+        const savedata = {
+          currentIndex: this.currentIndex,
+          amount: this.amount,
+          num: this.num,
+          progress: this.progress,
+          storeid: this.storeid,
+          storename: this.storename,
+          storelist: this.storelist,
+          productnum: this.productnum,
+          productname: this.productname,
+          productimg: this.productimg,
+          productinfo: this.productinfo,
+          size: this.size,
+          cost: this.cost,
+          scrollTop: this.scrollTop,
+          list: this.list,
+          index: this.index,
+          select_option: this.select_option,
+          counter: this.counter,
+          tempselectproduct: this.tempselectproduct,
+          selectproduct: this.selectproduct,
+          selectproductimg: this.selectproductimg,
+          url: this.url,
+          tempimg: this.tempimg,
+          payment_window: this.payment_window,
+          openModal: this.openModal,
+          sellproduct: this.sellproduct,
+          price: this.price,
+          sellprice: this.sellprice,
+          sellproductnum: this.sellproductnum,
+          tempnum: this.tempnum
+        }
+
+        localStorage.setItem('myData', JSON.stringify(savedata));
+        // let orderbtn = document.getElementById("order");
+        // orderbtn.click();
+        let closebtn = document.getElementById("closebtn")
+        closebtn.click()
+      } else {
+
         const { IMP } = window;
-      IMP.init('imp44428270');
+        IMP.init('imp44428270');
 
-      /* 2. 결제 데이터 정의하기 */
-      const data = {
-        pg: 'kcp',                           // PG사
-        pay_method: 'card',                           // 결제수단
-        merchant_uid: `mid_${new Date().getTime()}`,   // 주문번호
-        amount: this.sellprice,                                 // 결제금액
-        name: this.size,                  // 주문명
-        buyer_email: 'example@example',               // 구매자 이메일
+        /* 2. 결제 데이터 정의하기 */
+        const data = {
+          pg: 'kcp',                           // PG사
+          pay_method: 'card',                           // 결제수단
+          merchant_uid: `mid_${new Date().getTime()}`,   // 주문번호
+          amount: this.sellprice,                                 // 결제금액
+          name: this.size,                  // 주문명
+          buyer_email: 'example@example',               // 구매자 이메일
+        }
+
+        /* 4. 결제 창 호출하기 */
+        IMP.request_pay(data, this.callback);
       }
-
-      /* 4. 결제 창 호출하기 */
-      IMP.request_pay(data, this.callback);
     },
     callback(response) {
       /* 3. 콜백 함수 정의하기 */
@@ -908,23 +914,9 @@ export default {
       } else {
         alert(`결제 실패: ${error_msg}`);
       }
-    
-      },
-      // banner1(){
-      //   this.$aroute.push('https://www.baskinrobbins.co.kr/event/view.php?flag=&seq=13344')
-      // },
-      // banner2(){
-      //   this.$aroute.push('https://www.baskinrobbins.co.kr/event/view.php?flag=&seq=13344')
-      // },
-      // banner3(){
-      //   this.$aroute.push('https://www.baskinrobbins.co.kr/event/view.php?flag=&seq=13344')
-      // },
-      // banner4(){
-      //   this.$aroute.push('https://www.baskinrobbins.co.kr/event/view.php?flag=&seq=13344')
-      // },
-      // banner5(){
-      //   this.$aroute.push('https://www.baskinrobbins.co.kr/event/view.php?flag=&seq=13344')
-      // },
+
+    },
+
   },
 };
 </script>
@@ -954,7 +946,7 @@ export default {
   vertical-align: middle;
   padding-top: 15px;
   font-size: 30px;
-  margin-top:10px;
+  margin-top: 10px;
 }
 
 .grid_container_size {
@@ -983,10 +975,12 @@ export default {
   margin-top: 110px;
 
 }
-#size{
-  height:30px;
-  
+
+#size {
+  height: 30px;
+
 }
+
 /* 리스트 컨테이너 클래스명 */
 .container_list {
   /* display:flex; */
@@ -1000,7 +994,7 @@ export default {
   height: 300px;
   /* display: inline-block; */
   line-height: 100px;
-  color:#666666;
+  color: #666666;
   text-align: space-between;
   background-color: white;
   /* float:left; */
@@ -1011,14 +1005,15 @@ export default {
   border-radius: 10%;
   margin: 0 10px;
   white-space: nowrap;
-  font-weight:bold;
+  font-weight: bold;
   /* justify-content: space-around; */
 }
 
-.productsite:hover{
-  color:#69a4fc;
-  font-weight:bold;
+.productsite:hover {
+  color: #69a4fc;
+  font-weight: bold;
 }
+
 .orderstatus {
   border: 5px solid;
   border-color: aquamarine;
@@ -1045,7 +1040,7 @@ export default {
 .rightsidebar {
   width: 25%;
   height: 100%;
-  margin-top:-9px;
+  margin-top: -9px;
 }
 
 .shoppingbasket {
@@ -1053,7 +1048,7 @@ export default {
   border-color: #CFE2FF;
   border-radius: 10px;
   margin: 10px;
-  padding-right:10px;
+  padding-right: 10px;
   background-color: white;
   position: relative;
   height: 500px;
@@ -1127,14 +1122,14 @@ export default {
 .grid_item_size {
   border: solid 2px;
   text-align: center;
-  background-color:#B0D783;
+  background-color: #B0D783;
   border-color: #B0D783;
-  color:white;
+  color: white;
   font-size: 40px;
   font-weight: bold;
-  height:40px;
-  border-radius:10px;
-  line-height : 40px;
+  height: 40px;
+  border-radius: 10px;
+  line-height: 40px;
 
 }
 
@@ -1144,11 +1139,11 @@ export default {
   text-decoration-thickness: 2px;
   text-decoration-color: #46A538;
   background-color: #46A538;
-color:white;
-  border:1px solid;
-  border-color:#46A538;
+  color: white;
+  border: 1px solid;
+  border-color: #46A538;
   border: solid 2px;
-  border-color:#46A538;
+  border-color: #46A538;
 }
 
 .btn_cancle_child {
@@ -1157,36 +1152,36 @@ color:white;
 
 .grid_container_branch {
   display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-gap: 0px;
-    border: none;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 0px;
+  border: none;
 }
 
 .grid_item_branch {
   margin: 20px 10px 10px 10px;
   white-space: nowrap;
-  font-size:20px;
-  background-color:  #B0D783;
+  font-size: 20px;
+  background-color: #B0D783;
   border-radius: 10px;
-  border-color:#B0D783;
+  border-color: #B0D783;
   border: 2px solid;
-  line-height : 60px;
+  line-height: 60px;
   text-decoration: none;
-  color:white;
-  font-weight:bold;
+  color: white;
+  font-weight: bold;
 }
 
 /* 선택안됐을때 영역에 대한 스타일 */
 .grid_item_branchtext {
   width: 100px;
   height: 60px;
-  color:white;
+  color: white;
   border: none;
   text-align: space-between;
   display: inline-block;
   font-size: 15px;
-  font-weight:bold;
-text-align: center;
+  font-weight: bold;
+  text-align: center;
 }
 
 .grid_item_branch:hover {
@@ -1196,9 +1191,9 @@ text-align: center;
   text-decoration-color: #46A538;
   /* color: #CFE2FF; */
   background-color: #46A538;
-  font-weight:bold;
-  border-color:#46A538;
-  color:white;
+  font-weight: bold;
+  border-color: #46A538;
+  color: white;
 }
 
 .progress_bar {
@@ -1263,7 +1258,7 @@ a:hover {
 
 .arrow-steps .step {
   font-size: 14px;
-  left:70px;
+  left: 70px;
   text-align: center;
   color: #666;
   cursor: default;
@@ -1272,7 +1267,7 @@ a:hover {
   min-width: 260px;
   float: left;
   position: relative;
-  background-color: RGB(220,220,220);
+  background-color: RGB(220, 220, 220);
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -1283,14 +1278,14 @@ a:hover {
 .arrow-steps .step:after,
 .arrow-steps .step:before {
   content: " ";
-    position: absolute;
-    top: 0px;
-    right: -15px;
-    width: 7px;
-    height: 19px;
-    border-top: 16px solid transparent;
-    border-bottom: 25px solid transparent;
-    border-left: 18px solid RGB(220,220,220);
+  position: absolute;
+  top: 0px;
+  right: -15px;
+  width: 7px;
+  height: 19px;
+  border-top: 16px solid transparent;
+  border-bottom: 25px solid transparent;
+  border-left: 18px solid RGB(220, 220, 220);
   z-index: 2;
   transition: border-color 0.2s ease;
 }
@@ -1298,7 +1293,7 @@ a:hover {
 .arrow-steps .step:before {
   right: auto;
   left: 0;
-  font-weight:bold;
+  font-weight: bold;
   border-left: 17px solid #fff;
   z-index: 0;
 }
@@ -1314,13 +1309,13 @@ a:hover {
 
 .arrow-steps .step span {
   position: relative;
-  font-weight:bold;
+  font-weight: bold;
 }
 
 .arrow-steps .step span:before {
   opacity: 0;
   content: "✔";
-  font-size:15px;
+  font-size: 15px;
   position: absolute;
   top: -2px;
   left: -20px;
@@ -1329,7 +1324,7 @@ a:hover {
 
 .arrow-steps .step.done span:before {
   opacity: 1;
-  font-weight:bold;
+  font-weight: bold;
   -webkit-transition: opacity 0.3s ease 0.5s;
   -moz-transition: opacity 0.3s ease 0.5s;
   -ms-transition: opacity 0.3s ease 0.5s;
@@ -1337,14 +1332,14 @@ a:hover {
 }
 
 .arrow-steps .step.current {
-  color: #69a4fc; 
-  font-weight:bold;
+  color: #69a4fc;
+  font-weight: bold;
   background-color: #CFE2FF;
 }
 
 .arrow-steps .step.current:after {
   border-left: 17px solid #CFE2FF;
-  font-weight:bold;
+  font-weight: bold;
 }
 
 @media (max-width: 765px) {
@@ -1352,6 +1347,7 @@ a:hover {
     min-width: 50px;
   }
 }
+
 .profile_contents_container {
   width: 800px;
 }
@@ -1366,7 +1362,7 @@ a:hover {
   height: 50px;
   justify-content: end;
 }
-#taste_id{
-  height:170px;
-}
-</style>
+
+#taste_id {
+  height: 170px;
+}</style>
