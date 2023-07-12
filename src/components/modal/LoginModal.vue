@@ -5,8 +5,8 @@
                 <h2>Log in</h2>
                 <form class="wrapper-box" role="form" ng-submit="login()">
                     <input type="text" v-model="id" class="form-control form-control-email" placeholder="Id" required>
-                    <input type="password" v-model="pwd" class="form-control form-control-password"
-                        placeholder="Password" required>
+                    <input type="password" v-model="pwd" class="form-control form-control-password" placeholder="Password"
+                        required>
                     <!-- <div class="checkbox pull-left">
         <label>
           <input type="checkbox"> Remember me.
@@ -14,9 +14,8 @@
       </div> -->
                     <button type="button" class="btn btn-submit btn-default pull-right" @click="login">Log in</button>
                     <a id="custom-login-btn" @click="kakaoLogin()">
-            <img class="kakaologin" src="../../assets/kakao_login_small.png" 
-              alt="카카오 로그인 버튼" />
-          </a>
+                        <img class="kakaologin" src="../../assets/kakao_login_small.png" alt="카카오 로그인 버튼" />
+                    </a>
                 </form>
             </div>
         </div>
@@ -28,12 +27,11 @@
                     <input type="text" v-model="id" class="form-control form-control-username" placeholder="Id" required>
                     <input type="text" v-model="name" class="form-control form-control-username" placeholder="Username"
                         required>
-                    <input type="password" v-model="pwd" class="form-control form-control-password"
-                        placeholder="Password" required>
+                    <input type="password" v-model="pwd" class="form-control form-control-password" placeholder="Password"
+                        required>
                     <input type="email" v-model="email" class="form-control form-control-email" placeholder="Email address"
                         required>
-                    <input type="date" v-model="birthday" class="form-control form-control-date" 
-                        required>
+                    <input type="date" v-model="birthday" class="form-control form-control-date" required>
                     <input type="text" v-model="phonenum" class="form-control form-control-email" placeholder="PhoneNum"
                         required>
                     <!-- <div class="checkbox pull-left">
@@ -41,7 +39,7 @@
           <input type="checkbox"> Remember me.
         </label>
       </div> -->
-                    <button type="submit" class="btn btn-submit btn-default pull-right">Sign up</button>
+                    <button type="button" class="btn btn-submit btn-default pull-right" @click="join">Sign up</button>
                 </form>
             </div>
         </div>
@@ -67,7 +65,7 @@
 export default {
     data() {
         return {
-            num:0,
+            num: 0,
             showSignUp: false,
             email: '',
             name: '',
@@ -79,94 +77,95 @@ export default {
     },
     methods: {
         login() {
-      const self = this
-      self.$axios.get("http://localhost:8084/members/" + self.id).then(function (res) {
+            const self = this
+            self.$axios.get("http://localhost:8084/members/" + self.id).then(function (res) {
 
-        console.log(self.id)
-        console.log(res.data.dto)
-        if (res.data.dto != null && res.data.dto.pwd == self.pwd) {
-          sessionStorage.setItem("loginId", res.data.dto.id)
-          if (self.num == 0) {
-            location.href = "/"
-          }
-        } else (
-          alert("로그인 실패")
-        )
-      })
+                console.log(self.id)
+                console.log(res.data.dto)
+                if (res.data.dto != null && res.data.dto.pwd == self.pwd) {
+                    sessionStorage.setItem("loginId", res.data.dto.id)
+                    if (self.num == 0) {
+                        location.href = "/"
+                    }
+                } else (
+                    alert("로그인 실패")
+                )
+            })
+        },
+        join() {
+            const self = this
+            let form = new FormData()
+            form.append('id', self.id)
+            form.append('name', self.name)
+            form.append('pwd', self.pwd)
+            form.append('birthday', self.birthday)
+            form.append('phonenum', self.phonenum)
+            form.append('email', self.email)
+
+            self.$axios.post('http://localhost:8084/members', form).then(function (res) {
+                console.log(res.data.member)
+                sessionStorage.setItem("loginId", self.id)
+                self.clicklogin()
+            })
+        },
+        kakaoLogin() {
+
+            window.Kakao.Auth.login({
+                scope: 'account_email, profile_image, profile_nickname',
+                success: (authObj) => {
+                    const accessToken = authObj.access_token;
+                    // accessToken을 서버로 전송하거나 필요한 처리를 수행합니다.
+                    this.getKakaoAccount(accessToken);
+                },
+                fail: (err) => {
+                    console.error('카카오톡 로그인 실패', err);
+                },
+            });
+        },
+        getKakaoAccount(accessToken) {
+            window.Kakao.API.request({
+                url: '/v2/user/me',
+                success: (response) => {
+                    // 사용자 정보를 가져온 후에 처리할 로직을 작성합니다.
+                    console.log('Kakao account:', accessToken);
+                    sessionStorage.setItem("kakao_account_profileimg", response.kakao_account.profile.profile_image_url)
+                    sessionStorage.setItem("kakao_account_nickname", response.kakao_account.profile.nickname)
+                    this.email = response.kakao_account.email
+                    this.nickname = sessionStorage.getItem("kakao_account_nickname")
+                    this.profileimg = sessionStorage.getItem("kakao_account_profileimg")
+                    console.log(this.email)
+                    console.log(this.nickname)
+                    console.log(this.profileimg)
+                    const self = this
+                    self.$axios.get('http://localhost:8084/members/email/' + self.email).then(function (res) {
+                        if (res.data.member != null) {
+                            sessionStorage.setItem("loginId", res.data.member.id)
+                            location.href = "/"
+                        } else if (res.data.member == null) {
+                            let check = confirm("최초 이용시 회원가입이 필요합니다." + '\n' + " 회원가입페이지로 이동합니다.")
+                            console.log(check)
+                            if (check) {
+                                console.log(self.email)
+                                self.clickButton()
+                            } else {
+                                if (self.num == 0) {
+                                    sessionStorage.setItem("data", self.data)
+                                    location.href = "/"
+                                }
+                            }
+                            /*  router.push({ name: 'MemberJoin', query: { 'email': self.email } }) */
+                        }
+                    })
+                    // 필요한 로직을 수행합니다.
+                },
+                fail: (error) => {
+                    console.error('카카오톡 사용자 정보 조회 실패', error);
+                },
+            });
+        },
+        
     },
-    join() {
-      const self = this
-      let form = new FormData()
-      form.append('id', self.id)
-      form.append('name', self.name)
-      form.append('pwd', self.pwd)
-      form.append('birthday', self.birthday)
-      form.append('phonenum', self.phonenum)
-      form.append('email', self.email)
 
-      self.$axios.post('http://localhost:8084/members', form).then(function (res) {
-        console.log(res.data.member)
-        sessionStorage.setItem("loginId", self.id)
-        self.clicklogin()
-      })
-     },
-     kakaoLogin() {
-
-window.Kakao.Auth.login({
-  scope: 'account_email, profile_image, profile_nickname',
-  success: (authObj) => {
-    const accessToken = authObj.access_token;
-    // accessToken을 서버로 전송하거나 필요한 처리를 수행합니다.
-    this.getKakaoAccount(accessToken);
-  },
-  fail: (err) => {
-    console.error('카카오톡 로그인 실패', err);
-  },
-});
-},
-getKakaoAccount(accessToken) {
-window.Kakao.API.request({
-  url: '/v2/user/me',
-  success: (response) => {
-    // 사용자 정보를 가져온 후에 처리할 로직을 작성합니다.
-    console.log('Kakao account:', accessToken);
-    sessionStorage.setItem("kakao_account_profileimg", response.kakao_account.profile.profile_image_url)
-    sessionStorage.setItem("kakao_account_nickname", response.kakao_account.profile.nickname)
-    this.email = response.kakao_account.email
-    this.nickname = sessionStorage.getItem("kakao_account_nickname")
-    this.profileimg = sessionStorage.getItem("kakao_account_profileimg")
-    console.log(this.email)
-    console.log(this.nickname)
-    console.log(this.profileimg)
-    const self = this
-    self.$axios.get('http://localhost:8084/members/email/' + self.email).then(function (res) {
-      if (res.data.member != null) {
-        sessionStorage.setItem("loginId", res.data.member.id)
-        location.href = "/"
-      } else if (res.data.member == null) {
-        let check = confirm("최초 이용시 회원가입이 필요합니다." + '\n' + " 회원가입페이지로 이동합니다.")
-        console.log(check)
-        if (check) {
-          console.log(self.email)
-          self.clickButton()
-        } else {
-          if (self.num == 0) {
-            sessionStorage.setItem("data", self.data)
-            location.href = "/"
-          }
-        }
-        /*  router.push({ name: 'MemberJoin', query: { 'email': self.email } }) */
-      }
-    })
-    // 필요한 로직을 수행합니다.
-  },
-  fail: (error) => {
-    console.error('카카오톡 사용자 정보 조회 실패', error);
-  },
-});
-}
-    },
-   
 };
 </script>
   
@@ -267,7 +266,8 @@ window.Kakao.API.request({
 .login-page .login-content form.wrapper-box :-ms-input-placeholder {
     color: rgba(0, 0, 0, 0.5);
 }
-.form-control-date{
+
+.form-control-date {
     color: rgba(0, 0, 0, 0.5);
 }
 
@@ -387,7 +387,8 @@ window.Kakao.API.request({
     opacity: 0;
     transform: translateY(10px);
 }
-.kakaologin{
+
+.kakaologin {
     height: 34px;
     vertical-align: bottom;
     margin-left: 10px;
