@@ -11,6 +11,7 @@
         <!--  <span @click="kakaoLogin" v-if="loginId == null">LOGIN</span> -->
         <span @click="openModal" id="loginbutton" v-if="loginId == null">LOGIN</span>
         <span @click="kakaologout" v-else>LOGOUT</span>
+        <span @click="VocopenModal" id="loginbutton" v-if="loginId != null">VOC</span>
         <!--  <router-link class="nav-link" to="/join" style="margin-left: 10px; margin-right: 10px;" v-if="loginId ==null">JOIN</router-link> -->
         <span data-bs-toggle="modal" data-bs-target="#myinfomodal" v-if="loginId != null" @click="getmyinfo">MYINFO</span>
         <div id="canvas"></div>
@@ -18,6 +19,7 @@
     </div>
   </div>
   <login-modal v-show="isModalOpen"></login-modal>
+  <VocModal v-show="isVocModalOpen" @vocclose="VoccloseModal"></VocModal>
   <br />
   <kiosk-menu @need-login="clicklogin" />
 
@@ -206,16 +208,18 @@ import kioskMenu from '../sellingtype/kioskMenu.vue';
 // import QRCodeVue3 from "qrcode-vue3";
 import QRCode from "qrcode";
 import LoginModal from '@/components/modal/LoginModal.vue'
+import VocModal from '@/components/modal/VocModal.vue'
 
 
 export default {
   mounted() {
     this.generateQRCode();
   },
-  components: { kioskMenu,LoginModal },
+  components: { kioskMenu,LoginModal,VocModal },
   name: 'NavBar',
   data() {
     return {
+      isVocModalOpen: false,
       isModalOpen: false,
       qrCodeComponent: null,
       myDynamicValue: [],
@@ -434,6 +438,12 @@ export default {
   },
   closeModal() {
       this.isModalOpen = false;
+    }, 
+    VocopenModal() {
+    this.isVocModalOpen = true;
+  },
+  VoccloseModal() {
+      this.isVocModalOpen = false;
     }
 
   }
