@@ -1,7 +1,8 @@
 <template lang="">
+  <hr style="border-color:#CFE2FF border:2px solid;"/>
   <div>
     <div class="boxcontainer">
-      <div class="leftsidebar" :style="{ transform: 'translateY(' + scrollTop + 'px)' }">
+      <div class="leftsidebar" >
         <div class="upperleftside">
             <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
   <div class="carousel-indicators">
@@ -13,19 +14,19 @@
   </div>
   <div class="carousel-inner">
     <div class="carousel-item active" data-bs-interval="5000">
-      <img src="../../assets/banner1.jpg" class="d-block w-100 banner" alt="..." >
+      <img src="../../assets/banner1.jpg" class="d-block w-100 banner" alt="..." @click="banner1" >
     </div>
     <div class="carousel-item" data-bs-interval="5000">
-      <img src="../../assets/banner3.jpg" class="d-block w-100 banner" alt="...">
+      <img src="../../assets/banner3.jpg" class="d-block w-100 banner" alt="..." @click="banner2" >
     </div>
     <div class="carousel-item" data-bs-interval="5000">
-      <img src="../../assets/banner4.jpg" class="d-block w-100 banner" alt="...">
+      <img src="../../assets/banner4.jpg" class="d-block w-100 banner" alt="..." @click="banner3" >
     </div>
     <div class="carousel-item" data-bs-interval="5000">
-      <img src="../../assets/banner5.png" class="d-block w-100 banner" alt="...">
+      <img src="../../assets/banner5.png" class="d-block w-100 banner" alt="..." @click="banner4" >
     </div>
     <div class="carousel-item" data-bs-interval="5000">
-      <img src="../../assets/banner6.png" class="d-block w-100 banner" alt="...">
+      <img src="../../assets/banner6.png" class="d-block w-100 banner" alt="..." @click="banner5" >
     </div>
   </div>
   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
@@ -42,16 +43,16 @@
 
       <div class="body">
         <div class="ranking">
-          <div class="rank" style="color: white; font-weight: bold" v-for="(rank,index) in toplist" :key="index">
-            <div class="animate__animated animate__bounce animate__delay-2s animate__faster animate__repeat-2" id="text_rank">
+          <div class="rank" style="color: #CFE2FF; font-weight: bold" v-for="(rank,index) in toplist" :key="index">
+            <div id="text_rank">
               {{index+1}}위
               <div></div>
-              <div class="animate__animated animate_bounce">
+              <div>
 
 
                 <img
                   :src="rank"
-                  style="height: 150px; width: 150px"
+                  style="height: 175px; width: 175px"
                 />
               </div>
             </div>
@@ -82,7 +83,7 @@
 
           <!-- 메뉴 뿌리는 곳 -->
           <div class="container_list">
-            <div
+           <div
               v-show="progress == 3"
               v-for="product in list"
               :key="product.productnum"
@@ -96,26 +97,28 @@
                 class="img_product"
                 style="width: 75%; height: 75%"
               />
-              <h4>{{ product.productname }}</h4>
+              <h4 style="font-size:15px; font-weight:bold;">{{ product.productname }}</h4>
             </div>
+            
+
+
+
+
             <!-- 지점이름 뿌리는 곳 -->
-            <div class="grid_container_branch">
-              <div
-              class="grid_item_branch"
-                v-show="progress == 1"
-                v-for="store in storelist"
-                :key="store.storeid" >
-                <button
-                  type="button"
-                  class="grid_item_branchtext"
-                  @click="selectstore(store)"
-                >
-                  {{store.storename}}
-                </button>
-                
-              </div>
-            </div>
-          </div>
+                    <div class="grid_container_branch">
+                              <div @click="selectstore(store)"
+                              class="grid_item_branch btn"
+                                v-show="progress == 1"
+                                v-for="store in storelist"
+                                :key="store.storeid" >
+                                
+                                {{store.storename}}
+                              </div>
+                    </div>
+          
+          
+          
+                  </div>
         </div>
 
 
@@ -124,23 +127,41 @@
         <div v-show="progress == 2">
          
 
-           <div class="selectbar_size">
-            <!-- <select v-model="select_option" @change="choicetype">
-              <option disabled value="" style="text-align: center">
-                --사이즈를 선택해주세요.--
-              </option>
-              <option
-                v-for="(sellprod, index) in sellproduct"
-                :key="sellprod.sellproductnum"
-                :value="index + 1"
-              >
-                {{ sellprod.sellproductname }}
-              </option>
-            </select> -->
+           <div class="selectbar_size" style="height:160px">
+          
+            
+                  <div style="display:flex;">
+                      <div style="width:16.67%" id="size">
+                        <img src="../../assets/single.png"
+                        style="width:150px; height:150px;">
+                      </div>
+                      <div style="width:16.67%" id="size">
+                        <img src="../../assets/double.png"
+                        style="width:150px; height:150px;">
+                      </div>
+                      <div style="width:16.67%" id="size">
+                        <img src="../../assets/fint.png"
+                        style="width:150px; height:150px;">
+                      </div>
+                      <div style="width:16.67%" id="size">
+                        <img src="../../assets/quarter.png"
+                        style="width:150px; height:150px;">
+                      </div>
+                      <div style="width:16.67%" id="size">
+                        <img src="../../assets/family.png"
+                        style="width:150px; height:150px;">
+                      </div>
+                      <div style="width:16.67%" id="size">
+                        <img src="../../assets/halfgallon.png"
+                        style="width:150px; height:150px;">
+                      </div>
+                  </div>
+          </div>
 
-            <div class="grid_container_size">
+          <div>
+            <div class="grid_container_size" >
               <div
-                style="cursor: pointer"
+                style="cursor: pointer; font-size:15px;"
                 class="grid_item_size"
                 v-for="(sellprod, index) in sellproduct"
                 @click="choicetype(index + 1)"
@@ -152,6 +173,14 @@
             </div>
           </div>
 
+
+
+
+
+
+
+
+
           <div></div>
         </div>
       </div>
@@ -162,7 +191,7 @@
           class="shoppingbasket"
           :style="{ transform: 'translateY(' + scrollTop + 'px)' }"
         >
-          주문진행상태바<br />
+        
 
           <!-- 아코디언의 공간 -->
           <div class="accordion accordion-flush" id="accordionFlushExample">
@@ -289,7 +318,7 @@
                       data-bs-target="#staticBackdrop"
                       @click="orderconfirm"
                     >
-                      주문하기
+                      <div style="font-weight:bold">주문하기</div>
                     </button>
                   </div>
                 </div>
@@ -325,24 +354,46 @@
             aria-label="Close"
           ></button>
         </div>
+
+
+
         <div class="modal-body">
-          지점명 : {{ storename }}<br />
-          선택한 사이즈 : {{ size }}<br />
-          선택한 맛의 종류 :
-          <div class="ordercontainer">
-            <div v-for="(selproduct, index) in selectproduct" :key="selproduct.productnum">
-              <img style="width:100px; height:100px" :src="selectproductimg[index]">
-                 <div>
-                   {{ selproduct.productname }}
+          
+    
+            <div class="profile_contents_container">
+              <div class="profile_contents" style="display: flex;">
+                <div class="profile_title">지점명
+                </div>
+                <div class="profile_detail">{{ storename }}
+                </div>
+              </div>
+              <div class="profile_contents" style="display: flex;">
+                <div class="profile_title">사이즈
+                </div>
+                <div class="profile_detail">{{ size }}
+                </div>
+              </div>
+              <div class="profile_contents" id="taste_id" style="display: flex;">
+                <div class="profile_title">맛
+                </div>
+                <div class="profile_detail"><div class="ordercontainer">
+                  <div v-for="(selproduct, index) in selectproduct" :key="selproduct.productnum">
+                    <img style="width:100px; height:100px" :src="selectproductimg[index]">
+                    <div>
+                      {{ selproduct.productname }}
+                    </div>
                   </div>
+                </div>
+                </div>
+              </div>
+              <div class="profile_contents" style="display: flex;">
+              </div>
+              <div class="profile_contents" style="display: flex;">
+                <div class="profile_title">가격
+                </div><div style="text-align:center; width:600px;">{{ sellprice }}</div>
+              </div>
             </div>
-          </div>
 
-
-          <!-- <div v-for="selprice in sellproduct" :key="selprice.sellproductnum"> -->
-          <!-- 가격 : {{selprice.sellproductprice}}원  -->
-          <!-- </div> -->
-          {{ selprice }}
         </div>
         <div class="modal-footer">
           <button
@@ -362,16 +413,13 @@
 </template>
 <script>
 
-
-
-
 export default {
   
   name: "kioskMenu",
   data() {
     return {
       none: false,
-      steps: ['Step 1', 'Step 2', 'Step 3', 'Step 4'],
+      steps: ['Step 1. 지점선택', 'Step 2. 사이즈 선택', 'Step 3. 맛 선택', 'Step 4. 결제'],
       currentIndex: 0,
       amount: [],
       num: 2,
@@ -562,9 +610,7 @@ export default {
               accordion4.click();
               self.nextStep()
             }
-
           }
-
           let accordion3 = document.getElementById("accordion3");
           accordion3.click();
 
@@ -863,8 +909,22 @@ export default {
         alert(`결제 실패: ${error_msg}`);
       }
     
-      }
-
+      },
+      // banner1(){
+      //   this.$aroute.push('https://www.baskinrobbins.co.kr/event/view.php?flag=&seq=13344')
+      // },
+      // banner2(){
+      //   this.$aroute.push('https://www.baskinrobbins.co.kr/event/view.php?flag=&seq=13344')
+      // },
+      // banner3(){
+      //   this.$aroute.push('https://www.baskinrobbins.co.kr/event/view.php?flag=&seq=13344')
+      // },
+      // banner4(){
+      //   this.$aroute.push('https://www.baskinrobbins.co.kr/event/view.php?flag=&seq=13344')
+      // },
+      // banner5(){
+      //   this.$aroute.push('https://www.baskinrobbins.co.kr/event/view.php?flag=&seq=13344')
+      // },
   },
 };
 </script>
@@ -882,18 +942,19 @@ export default {
   display: flex;
   height: 100%;
   background-color: white;
-  border: 5px solid;
-  border-radius: 30px;
-  border-color: #f5d742;
+  /* border: 5px solid; */
+  /* border-radius: 30px; */
+  /* border-color: #CFE2FF; */
   flex-direction: row;
   justify-content: space-around;
 }
 
 #text_rank {
-  color: #f5d742;
+  color: #185432;
   vertical-align: middle;
   padding-top: 15px;
-  font-size: 20px;
+  font-size: 30px;
+  margin-top:10px;
 }
 
 .grid_container_size {
@@ -919,8 +980,13 @@ export default {
   background-color: white;
   width: 15%;
   height: 80%;
-}
+  margin-top: 110px;
 
+}
+#size{
+  height:30px;
+  
+}
 /* 리스트 컨테이너 클래스명 */
 .container_list {
   /* display:flex; */
@@ -934,19 +1000,25 @@ export default {
   height: 300px;
   /* display: inline-block; */
   line-height: 100px;
+  color:#666666;
   text-align: space-between;
   background-color: white;
   /* float:left; */
+  /* display: inline-block; */
   display: inline-block;
-
   /* margin-left: 10px ; 
     margin-bottom: 20px; */
   border-radius: 10%;
   margin: 0 10px;
-
+  white-space: nowrap;
+  font-weight:bold;
   /* justify-content: space-around; */
 }
 
+.productsite:hover{
+  color:#69a4fc;
+  font-weight:bold;
+}
 .orderstatus {
   border: 5px solid;
   border-color: aquamarine;
@@ -971,15 +1043,17 @@ export default {
 }
 
 .rightsidebar {
-  width: 15%;
+  width: 25%;
   height: 100%;
+  margin-top:-9px;
 }
 
 .shoppingbasket {
-  border: 5px solid;
-  border-color: aquamarine;
+  border: 3px solid;
+  border-color: #CFE2FF;
   border-radius: 10px;
   margin: 10px;
+  padding-right:10px;
   background-color: white;
   position: relative;
   height: 500px;
@@ -1040,13 +1114,7 @@ export default {
 }
 
 
-.grid_item_branchtext:hover {
-  /* background-color: aqua; */
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-decoration-color: gray;
-  color: gray;
-}
+
 
 /* 사이즈 선택시 리스트 뿌려주는 컨테이너 */
 .grid_container_size {
@@ -1057,18 +1125,30 @@ export default {
 /* 그리드 컨테이너 사이즈의 자식 */
 
 .grid_item_size {
-  border: solid 1px;
+  border: solid 2px;
   text-align: center;
-  border: none;
-  font-size: 30px;
+  background-color:#B0D783;
+  border-color: #B0D783;
+  color:white;
+  font-size: 40px;
+  font-weight: bold;
+  height:40px;
+  border-radius:10px;
+  line-height : 40px;
+
 }
 
 .grid_item_size:hover {
-  background-color: white;
-  text-decoration: underline;
+  background-color: #CFE2FF;
+  /* text-decoration: underline; */
   text-decoration-thickness: 2px;
-  text-decoration-color: gray;
-  color: gray;
+  text-decoration-color: #46A538;
+  background-color: #46A538;
+color:white;
+  border:1px solid;
+  border-color:#46A538;
+  border: solid 2px;
+  border-color:#46A538;
 }
 
 .btn_cancle_child {
@@ -1077,31 +1157,53 @@ export default {
 
 .grid_container_branch {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  /* 4열 그리드 */
-  grid-gap: 5px;
-  /* 그리드 간격 설정 */
-  border: solid;
-  border-color: #265cac;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 0px;
+    border: none;
 }
 
 .grid_item_branch {
   margin: 20px 10px 10px 10px;
+  white-space: nowrap;
+  font-size:20px;
+  background-color:  #B0D783;
+  border-radius: 10px;
+  border-color:#B0D783;
+  border: 2px solid;
+  line-height : 60px;
+  text-decoration: none;
+  color:white;
+  font-weight:bold;
 }
 
+/* 선택안됐을때 영역에 대한 스타일 */
 .grid_item_branchtext {
   width: 100px;
   height: 60px;
-  background-color: white;
+  color:white;
   border: none;
   text-align: space-between;
   display: inline-block;
-  font-size: 25px;
+  font-size: 15px;
+  font-weight:bold;
+text-align: center;
+}
+
+.grid_item_branch:hover {
+  /* background-color: aqua; */
+  /* text-decoration: underline; */
+  text-decoration-thickness: 2px;
+  text-decoration-color: #46A538;
+  /* color: #CFE2FF; */
+  background-color: #46A538;
+  font-weight:bold;
+  border-color:#46A538;
+  color:white;
 }
 
 .progress_bar {
   font-family: 'Lato', sans-serif;
-  width: 130vh;
+  width: 200vh;
   margin: 0 auto;
   font-size: 50px;
 }
@@ -1113,13 +1215,14 @@ export default {
 
 .banner {
   height: 500px;
+  padding: 15px;
 }
 
 .button {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  border: 1px solid green;
+  border: none;
   font-size: 20px;
   display: flex;
   justify-content: center;
@@ -1160,15 +1263,16 @@ a:hover {
 
 .arrow-steps .step {
   font-size: 14px;
+  left:70px;
   text-align: center;
   color: #666;
   cursor: default;
-  margin: 0 3px;
+  margin: 0 2px;
   padding: 10px 10px 10px 30px;
-  min-width: 227px;
+  min-width: 260px;
   float: left;
   position: relative;
-  background-color: #b4e7ff;
+  background-color: RGB(220,220,220);
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -1179,14 +1283,14 @@ a:hover {
 .arrow-steps .step:after,
 .arrow-steps .step:before {
   content: " ";
-  position: absolute;
-  top: 0;
-  right: -17px;
-  width: 0;
-  height: 0;
-  border-top: 19px solid transparent;
-  border-bottom: 17px solid transparent;
-  border-left: 17px solid #b4e7ff;
+    position: absolute;
+    top: 0px;
+    right: -15px;
+    width: 7px;
+    height: 19px;
+    border-top: 16px solid transparent;
+    border-bottom: 25px solid transparent;
+    border-left: 18px solid RGB(220,220,220);
   z-index: 2;
   transition: border-color 0.2s ease;
 }
@@ -1194,6 +1298,7 @@ a:hover {
 .arrow-steps .step:before {
   right: auto;
   left: 0;
+  font-weight:bold;
   border-left: 17px solid #fff;
   z-index: 0;
 }
@@ -1209,11 +1314,13 @@ a:hover {
 
 .arrow-steps .step span {
   position: relative;
+  font-weight:bold;
 }
 
 .arrow-steps .step span:before {
   opacity: 0;
   content: "✔";
+  font-size:15px;
   position: absolute;
   top: -2px;
   left: -20px;
@@ -1222,6 +1329,7 @@ a:hover {
 
 .arrow-steps .step.done span:before {
   opacity: 1;
+  font-weight:bold;
   -webkit-transition: opacity 0.3s ease 0.5s;
   -moz-transition: opacity 0.3s ease 0.5s;
   -ms-transition: opacity 0.3s ease 0.5s;
@@ -1229,18 +1337,36 @@ a:hover {
 }
 
 .arrow-steps .step.current {
-  color: #fff;
-  background-color: #ff5050;
+  color: #69a4fc; 
+  font-weight:bold;
+  background-color: #CFE2FF;
 }
 
 .arrow-steps .step.current:after {
-  border-left: 17px solid #ff5050;
+  border-left: 17px solid #CFE2FF;
+  font-weight:bold;
 }
 
 @media (max-width: 765px) {
   .arrow-steps .step {
-    min-width: 35px;
+    min-width: 50px;
   }
 }
+.profile_contents_container {
+  width: 800px;
+}
 
+.profile_title {
+  width: 300px;
+  height: 50px;
+}
+
+.profile_detail {
+  width: 500px;
+  height: 50px;
+  justify-content: end;
+}
+#taste_id{
+  height:170px;
+}
 </style>
