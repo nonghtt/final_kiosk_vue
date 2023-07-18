@@ -5,18 +5,27 @@
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <span style="font-weight: bold; font-size: 20px;">고객의소리</span>
             </div>
-            <div class="schbox">
-                <label for="category">분류</label>
-                <select id="category" v-model="category">
-                    <option value="1">칭찬</option>
-                    <option value="2">불만</option>
-                </select>
-            </div>
+            <div style="display:flex">
+                <div class="schbox">
+                    <label for="category">지점 선택</label>
+                    <select id="category" v-model="store" @change="check(store)">
+                        <option v-for="(store,i) in storelist" :key="i" :value="i">{{ store.storename }}</option>
+                        
+                    </select>
+                </div>
+                <div class="schbox">
+                    <label for="category">분류</label>
+                    <select id="category" v-model="category">
+                        <option value="1">칭찬</option>
+                        <option value="2">불만</option>
+                    </select>
+                </div>
             
-            <div>
-                <label for="title">제목</label>
-                <input type="text" id="title" v-model="title">
-            </div>
+        </div>
+        <div>
+            <label for="title" style="display: inline-block; justify-content: start;">제목</label>
+            <input type="text" id="title" v-model="title">
+        </div>
             <div ref="editor"></div>
         </div>
         <div class="d-flex justify-content-end">
@@ -43,12 +52,22 @@ export default {
     name: "VocModal",
     data() {
         return {
+            value:0,
             editor: null,
             category: "", // 선택된 분류를 담을 변수
             title: "", // 입력된 제목을 담을 변수
             vocContent: "", // 입력된 공지사항 내용을 담을 변수
-            storeid : sessionStorage.getItem('loginId'),
+            storelist:[],
+            store:'',
+            storeid:''
         };
+    },
+    created:function(){
+        const self = this;
+        self.$axios.get("http://localhost:8085/store").then(function(res){
+            self.storelist = res.data.storelist
+            
+        })
     },
     mounted() {
         const query = this.$route.query;
@@ -73,10 +92,11 @@ export default {
         },
         saveVoc() {
             const formData = new FormData();
+            formData.append("storeid", this.storeid);
             formData.append("content", this.vocContent);
             formData.append("category", this.category);
             formData.append("title", this.title);
-            formData.append("storeid", this.storeid);
+            formData.append("store", this.storeid);
            // console.log(this.vocContent + this.title + this.category + this.storeid);
             this.$axios
                 .post('http://localhost:8085/vocs', formData, {
@@ -93,6 +113,7 @@ export default {
                 })
                 .catch(error => {
                     console.error(error);
+                    this.$emit('vocclose')  
                 });
         },
         goToVocList() {
@@ -103,6 +124,10 @@ export default {
         },
         closeVoc(){
             this.$emit('vocclose')
+        },
+        check(i){
+           this.storeid = this.storelist[i].storeid
+       
         }
     }
 };
